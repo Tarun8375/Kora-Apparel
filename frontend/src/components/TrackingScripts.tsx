@@ -1,7 +1,5 @@
 'use client';
 
-import React from 'react';
-
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 
@@ -29,8 +27,9 @@ export default function TrackingScripts() {
     <>
       {/* ── Facebook Pixel ── */}
       {fbPixelEnabled && fbPixelId && (
-        <React.Fragment key="fb-pixel">
+        <>
           <script
+            key="fb-script"
             dangerouslySetInnerHTML={{
               __html: `
                 !function(f,b,e,v,n,t,s)
@@ -46,7 +45,7 @@ export default function TrackingScripts() {
               `
             }}
           />
-          <noscript>
+          <noscript key="fb-noscript">
             <img
               height="1"
               width="1"
@@ -55,14 +54,15 @@ export default function TrackingScripts() {
               alt=""
             />
           </noscript>
-        </React.Fragment>
+        </>
       )}
 
       {/* ── Google Analytics 4 ── */}
       {gaEnabled && gaId && (
-        <React.Fragment key="ga4">
-          <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+        <>
+          <script key="ga-src" async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
           <script
+            key="ga-inline"
             dangerouslySetInnerHTML={{
               __html: `
                 window.dataLayer = window.dataLayer || [];
@@ -72,13 +72,14 @@ export default function TrackingScripts() {
               `
             }}
           />
-        </React.Fragment>
+        </>
       )}
 
       {/* ── Google Tag Manager ── */}
       {gtmEnabled && gtmId && (
-        <React.Fragment key="gtm">
+        <>
           <script
+            key="gtm-script"
             dangerouslySetInnerHTML={{
               __html: `
                 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -90,11 +91,12 @@ export default function TrackingScripts() {
             }}
           />
           <noscript
+            key="gtm-noscript"
             dangerouslySetInnerHTML={{
               __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=${gtmId}" height="0" width="0" style="display:none;visibility:hidden"></iframe>`
             }}
           />
-        </React.Fragment>
+        </>
       )}
     </>
   );
