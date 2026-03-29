@@ -3,9 +3,8 @@
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { RefreshCcw } from 'lucide-react';
-import { motion } from 'framer-motion';
 
-export default function GlobalError({
+export default function ErrorBoundary({
   error,
   reset,
 }: {
@@ -19,10 +18,7 @@ export default function GlobalError({
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 text-center">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
+      <div
         className="glass p-12 max-w-lg flex flex-col items-center justify-center gap-6 border-0"
       >
         <span className="text-[10px] uppercase tracking-widest font-bold text-destructive px-3 py-1 bg-destructive/10">System Error</span>
@@ -38,7 +34,7 @@ export default function GlobalError({
           <RefreshCcw className="w-4 h-4 mr-3" />
           Attempt Recovery
         </Button>
-      </motion.div>
+      </div>
     </div>
   );
 }
