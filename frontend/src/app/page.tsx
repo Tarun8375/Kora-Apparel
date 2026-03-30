@@ -22,7 +22,7 @@ const fetchCategories = async () => { try { const { data } = await api.get('/cat
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
   visible: (i = 0) => ({
-    opacity: 1, 
+    opacity: 1,
     y: 0,
     transition: { delay: i * 0.12, duration: 0.75, ease: [0.22, 1, 0.36, 1] as const },
   }),
@@ -30,9 +30,9 @@ const fadeUp = {
 
 const fadeIn = {
   hidden: { opacity: 0 },
-  visible: (i = 0) => ({ 
-    opacity: 1, 
-    transition: { delay: i * 0.1, duration: 0.6 } 
+  visible: (i = 0) => ({
+    opacity: 1,
+    transition: { delay: i * 0.1, duration: 0.6 }
   }),
 };
 
@@ -156,13 +156,13 @@ function CategoryGridSection({ categories }: { categories: any[] }) {
                 ) : <div className="w-full h-full bg-muted" />}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10 flex items-end justify-between">
-                   <div className="flex flex-col gap-2">
-                     <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary/80 group-hover:text-primary transition-colors">House Line 00{idx + 1}</p>
-                     <h3 className="text-3xl font-serif font-medium text-white tracking-tight lowercase">{cat.name}</h3>
-                   </div>
-                   <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-md group-hover:bg-primary group-hover:border-primary group-hover:scale-110 transition-all duration-500">
-                     <ArrowUpRight className="w-5 h-5 text-white" />
-                   </div>
+                  <div className="flex flex-col gap-2">
+                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary/80 group-hover:text-primary transition-colors">House Line 00{idx + 1}</p>
+                    <h3 className="text-3xl font-serif font-medium text-white tracking-tight lowercase">{cat.name}</h3>
+                  </div>
+                  <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-md group-hover:bg-primary group-hover:border-primary group-hover:scale-110 transition-all duration-500">
+                    <ArrowUpRight className="w-5 h-5 text-white" />
+                  </div>
                 </div>
               </Link>
             </motion.div>
@@ -249,7 +249,7 @@ function ProductGridSection({ title, eyebrow, products, isLoading, viewAllLink }
               <div className="h-4 w-2/3 bg-muted animate-pulse rounded-full" />
             </div>
           )) : products?.slice(0, 4).map((p: any, i: number) => (
-             <ProductCard key={p._id} product={p} idx={i} />
+            <ProductCard key={p._id} product={p} idx={i} />
           ))}
         </div>
       </div>
@@ -261,33 +261,33 @@ function ProductGridSection({ title, eyebrow, products, isLoading, viewAllLink }
  * 7. TESTIMONIALS & EDITORIAL CTA
  */
 function TestimonialsSection({ testimonials, content = {} }: { testimonials: any[], content?: any }) {
-    if (testimonials.length === 0) return null;
-    return (
-      <section className="w-full py-24 md:py-32 border-t border-border/10 bg-card/5">
-        <div className="container mx-auto px-6 max-w-[1400px]">
-          <div className="text-center mb-16 md:mb-24 flex flex-col items-center gap-4">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Voices of Kora</p>
-            <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-4xl md:text-6xl font-serif font-medium tracking-tight lowercase">
-              {content.sectionLabel || 'what they say'}
-            </motion.h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((t: any, idx: number) => (
-               <motion.div key={t._id} custom={idx} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="bg-background border border-border/40 rounded-[2.5rem] p-10 flex flex-col gap-6 shadow-xl hover:shadow-2xl transition-all duration-500">
-                  <p className="text-foreground/90 text-[15px] leading-relaxed font-light italic flex-1">"{t.review}"</p>
-                  <div className="flex items-center gap-4 pt-8 border-t border-border/30">
-                    <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-black text-sm">{t.name.charAt(0)}</div>
-                    <div>
-                      <p className="text-xs font-black uppercase tracking-widest text-foreground">{t.name}</p>
-                      <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{t.designation || 'Verified Buyer'}</p>
-                    </div>
-                  </div>
-               </motion.div>
-            ))}
-          </div>
+  if (testimonials.length === 0) return null;
+  return (
+    <section className="w-full py-24 md:py-32 border-t border-border/10 bg-card/5">
+      <div className="container mx-auto px-6 max-w-[1400px]">
+        <div className="text-center mb-16 md:mb-24 flex flex-col items-center gap-4">
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Voices of Kora</p>
+          <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-4xl md:text-6xl font-serif font-medium tracking-tight lowercase">
+            {content.sectionLabel || 'what they say'}
+          </motion.h2>
         </div>
-      </section>
-    );
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {testimonials.map((t: any, idx: number) => (
+            <motion.div key={t._id} custom={idx} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="bg-background border border-border/40 rounded-[2.5rem] p-10 flex flex-col gap-6 shadow-xl hover:shadow-2xl transition-all duration-500">
+              <p className="text-foreground/90 text-[15px] leading-relaxed font-light italic flex-1">"{t.review}"</p>
+              <div className="flex items-center gap-4 pt-8 border-t border-border/30">
+                <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-black text-sm">{t.name.charAt(0)}</div>
+                <div>
+                  <p className="text-xs font-black uppercase tracking-widest text-foreground">{t.name}</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{t.designation || 'Verified Buyer'}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 function EditorialSection({ content = {}, settings }: { content?: any, settings: any }) {
@@ -310,18 +310,18 @@ function EditorialSection({ content = {}, settings }: { content?: any, settings:
  * 8. NEWSLETTER
  */
 function NewsletterSection() {
-    return (
-        <section className="w-full py-40 md:py-56 bg-background relative overflow-hidden">
-            <div className="container mx-auto px-6 text-center max-w-3xl space-y-12 relative z-10">
-                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">The Inner Circle</p>
-                <h2 className="text-5xl md:text-8xl font-serif font-medium tracking-tight lowercase leading-[0.8] mb-8">join the <br /> house list</h2>
-                <form className="flex flex-col md:flex-row gap-5 justify-center mt-12">
-                   <input type="email" placeholder="Enter your email address" className="w-full md:w-[380px] bg-card border border-border/40 px-8 py-5 rounded-full focus:outline-none focus:border-primary/60 text-sm font-light" />
-                   <button className="bg-foreground text-background px-10 py-5 rounded-full text-[11px] font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-white transition-all shadow-xl">Join Now</button>
-                </form>
-            </div>
-        </section>
-    );
+  return (
+    <section className="w-full py-40 md:py-56 bg-background relative overflow-hidden">
+      <div className="container mx-auto px-6 text-center max-w-3xl space-y-12 relative z-10">
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">The Inner Circle</p>
+        <h2 className="text-5xl md:text-8xl font-serif font-medium tracking-tight lowercase leading-[0.8] mb-8">join the <br /> house list</h2>
+        <form className="flex flex-col md:flex-row gap-5 justify-center mt-12">
+          <input type="email" placeholder="Enter your email address" className="w-full md:w-[380px] bg-card border border-border/40 px-8 py-5 rounded-full focus:outline-none focus:border-primary/60 text-sm font-light" />
+          <button className="bg-foreground text-background px-10 py-5 rounded-full text-[11px] font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-white transition-all shadow-xl">Join Now</button>
+        </form>
+      </div>
+    </section>
+  );
 }
 
 // ── MAIN EXPORT ──────────────────────────────────────────────────────────────
@@ -336,14 +336,14 @@ export default function Home() {
   const { data: allCategories = [] } = useQuery({ queryKey: ['public-categories'], queryFn: fetchCategories });
 
   const { data: categoryRowProducts = [] } = useQuery({
-    queryKey: ['category-row-products', settings?.pageSections?.find((s:any) => s.type === 'category-row')?.content?.categorySlug],
+    queryKey: ['category-row-products', settings?.pageSections?.find((s: any) => s.type === 'category-row')?.content?.categorySlug],
     queryFn: async () => {
-      const slug = settings?.pageSections?.find((s:any) => s.type === 'category-row')?.content?.categorySlug;
+      const slug = settings?.pageSections?.find((s: any) => s.type === 'category-row')?.content?.categorySlug;
       if (!slug) return [];
       const { data } = await api.get(`/products?category=${encodeURIComponent(slug)}&limit=4`);
       return data.products;
     },
-    enabled: !!settings?.pageSections?.some((s:any) => s.type === 'category-row')
+    enabled: !!settings?.pageSections?.some((s: any) => s.type === 'category-row')
   });
 
   if (settingsLoading) return (
