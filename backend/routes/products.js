@@ -8,11 +8,13 @@ const { getCache, setCache, invalidateCache } = require('../utils/cache');
 // @GET /api/products
 router.get('/', async (req, res, next) => {
   try {
-    const cacheKey = `products:list:${Buffer.from(JSON.stringify(req.query)).toString('base64')}`;
+    const sortedQuery = Object.keys(req.query).sort().reduce((acc, key) => { acc[key] = req.query[key]; return acc; }, {});
+    const cacheKey = `products:list:${Buffer.from(JSON.stringify(sortedQuery)).toString('base64')}`;
     const cached = await getCache(cacheKey);
     if (cached) return res.json(cached);
 
-    const { category, size, color, minPrice, maxPrice, sort, page = 1, limit = 12, search, featured } = req.query;
+    const { category, size, color, minPrice, maxPrice, sort, page = 1, search, featured } = req.query;
+    const limit = Math.min(Number(req.query.limit) || 12, 50);
     const query = {};
     if (category) query.category = category;
     if (size) query.sizes = size;

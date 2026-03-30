@@ -37,14 +37,20 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   
-  // Smart Hashing: Check if the password is already a bcrypt hash
-  // (Bcrypt hashes start with $2a$, $2b$, or $2y$ and are 60 chars long)
+  // Smart Hashing: Prevents double hashing when migrating from Verification schema
   const isHashed = /^\$2[aby]\$[0-9]{2}\$[./A-Za-z0-9]{53}$/.test(this.password);
   
   if (!isHashed) {
     this.password = await bcrypt.hash(this.password, 12);
   }
   
+  next();
+});
+
+// Cascade Delete Orphaned Orders and Cleanup
+userSchema.pre('deleteOne', { document: true, query: false }, async function(next) {
+  // Option: We could delete orders, but typically we retain orders and nullify the user
+  await mongoose.model('Order').updateMany({ user: this._id }, { $unset: { user: "" } });
   next();
 });
 

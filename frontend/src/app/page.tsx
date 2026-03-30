@@ -12,10 +12,10 @@ import { motion } from 'framer-motion';
 const fetchNewArrivals = async () => { const { data } = await api.get('/products?sort=newest&limit=4'); return data.products; };
 const fetchCollections = async () => { const { data } = await api.get('/products?featured=true&limit=4'); return data.products; };
 const fetchBasics = async () => { const { data } = await api.get('/products?category=Basics&limit=4'); return data.products; };
-const fetchActiveBanner = async () => { try { const { data } = await api.get('/banners/active'); return data; } catch { return null; } };
-const fetchSettings = async () => { try { const { data } = await api.get('/settings'); return data; } catch { return null; } };
-const fetchTestimonials = async () => { try { const { data } = await api.get('/testimonials?active=true'); return data; } catch { return []; } };
-const fetchCategories = async () => { try { const { data } = await api.get('/categories'); return data; } catch { return []; } };
+const fetchActiveBanner = async () => { try { const { data } = await api.get('/banners/active'); return data; } catch (err) { console.error('Failed to fetch active banner:', err); return null; } };
+const fetchSettings = async () => { try { const { data } = await api.get('/settings'); return data; } catch (err) { console.error('Failed to fetch settings:', err); return null; } };
+const fetchTestimonials = async () => { try { const { data } = await api.get('/testimonials?active=true'); return data; } catch (err) { console.error('Failed to fetch testimonials:', err); return []; } };
+const fetchCategories = async () => { try { const { data } = await api.get('/categories'); return data; } catch (err) { console.error('Failed to fetch categories:', err); return []; } };
 
 // ── Animation Helpers ───────────────────────────────────────────────────────
 

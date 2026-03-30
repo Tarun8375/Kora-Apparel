@@ -33,6 +33,8 @@ const productSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Performance Indexing
+productSchema.index({ slug: 1 });
+productSchema.index({ category: 1 });
 productSchema.index({ category: 1, createdAt: -1 });
 productSchema.index({ name: 'text', tags: 'text' });
 productSchema.index({ isFeatured: 1 });

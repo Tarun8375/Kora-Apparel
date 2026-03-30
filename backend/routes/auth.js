@@ -11,6 +11,25 @@ const sendEmail = require('../utils/sendEmail');
 
 const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
+const sendTokenResponse = (user, res) => {
+  const token = generateToken(user._id);
+  const options = {
+    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  };
+
+  res.cookie('jwt', token, options);
+  res.json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    cart: user.cart || []
+  });
+};
+
 // ================= ADMIN FLOWS =================
 
 // @POST /api/auth/admin/login
@@ -19,16 +38,14 @@ router.post('/admin/login', async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: 'Email and password required' });
 
-    const user = await User.findOne({ email });
+    const emailStr = String(email);
+    const user = await User.findOne({ email: emailStr });
     if (!user || user.role !== 'admin') return res.status(401).json({ message: 'Invalid admin credentials' });
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) return res.status(401).json({ message: 'Invalid admin credentials' });
 
-    res.json({
-      _id: user._id, name: user.name, email: user.email, role: user.role,
-      token: generateToken(user._id),
-    });
+    sendTokenResponse(user, res);
   } catch (err) { next(err); }
 });
 
@@ -277,10 +294,7 @@ router.post('/verify-otp', async (req, res, next) => {
     await user.save();
     await verifyRec.deleteOne(); // Cleanup
 
-    res.json({
-      _id: user._id, name: user.name, email: user.email, role: user.role, cart: user.cart,
-      token: generateToken(user._id),
-    });
+    sendTokenResponse(user, res);
   } catch (err) { next(err); }
 });
 
@@ -329,10 +343,7 @@ router.post('/login', async (req, res, next) => {
       await user.save();
     }
 
-    res.json({
-      _id: user._id, name: user.name, email: user.email, role: user.role, cart: user.cart,
-      token: generateToken(user._id),
-    });
+    sendTokenResponse(user, res);
   } catch (err) { next(err); }
 });
 
@@ -498,6 +509,17 @@ router.post('/reset-password', async (req, res, next) => {
 
     res.json({ message: 'Password updated successfully. You can now login.' });
   } catch (err) { next(err); }
+});
+
+// @POST /api/auth/logout
+router.post('/logout', (req, res) => {
+  res.cookie('jwt', 'none', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  });
+  res.status(200).json({ message: 'Logged out successfully' });
 });
 
 module.exports = router;

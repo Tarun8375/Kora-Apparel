@@ -3,8 +3,7 @@ import { persist } from 'zustand/middleware';
 
 interface AuthState {
   user: any | null;
-  token: string | null;
-  setAuth: (user: any, token: string | null) => void;
+  setAuth: (user: any) => void;
   logout: () => void;
 }
 
@@ -12,12 +11,12 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      token: null,
-      setAuth: (user, token) => set({ user, token }),
-      logout: () => set({ user: null, token: null }),
+      setAuth: (user) => set({ user }),
+      logout: () => set({ user: null }),
     }),
     {
       name: 'kora-auth-storage',
+      partialize: (state) => ({ user: state.user }), // Explicitly save only user
     }
   )
 );
