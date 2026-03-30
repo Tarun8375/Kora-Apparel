@@ -1,7 +1,6 @@
 const multer = require('multer');
 const path = require('path');
-const sharp = require('sharp');
-const fs = require('fs');
+const imagekit = require('../utils/imageKit'); // Utilizing new ImageKit integration
 
 const storage = multer.memoryStorage();
 
@@ -23,21 +22,37 @@ const processImages = async (req, res, next) => {
   if (files.length === 0) return next();
 
   try {
-    const uploadsDir = path.join(__dirname, '../uploads');
-    if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
-
     const filenames = [];
-    for (const file of files) {
-      const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}.webp`;
-      await sharp(file.buffer)
-        .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
-        .webp({ quality: 85 })
-        .toFile(path.join(uploadsDir, filename));
-      filenames.push(`/uploads/${filename}`);
+    
+    // Ensure ImageKit is alive
+    if (!imagekit) {
+      console.warn('ImageKit not configured. Failing gracefully.');
+      return next(new Error('Image Storage Backend Not Configured (ImageKit)'));
     }
+
+    for (const file of files) {
+      // Create a web-safe name
+      const safeName = file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const uniqueFileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}-${safeName}`;
+      
+      // Upload Buffer to ImageKit (as base64)
+      const response = await imagekit.upload({
+        file: file.buffer.toString('base64'),
+        fileName: uniqueFileName,
+        folder: '/kora_products', // Clean organization
+        useUniqueFileName: true
+      });
+      
+      // We push the path rather than the full URL.
+      // E.g., "/kora_products/1612...jpg"
+      // This allows the frontend to easily append transformation query params later.
+      filenames.push(response.filePath); 
+    }
+    
     req.processedImages = filenames;
     next();
   } catch (err) {
+    console.error('Image upload failed via ImageKit:', err);
     next(err);
   }
 };

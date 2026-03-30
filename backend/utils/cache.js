@@ -1,30 +1,27 @@
-let redis;
+let Redis;
 let client;
 let isConnected = false;
 
 try {
-  redis = require('redis');
-  client = redis.createClient({
-    url: process.env.REDIS_URL || 'redis://localhost:6379',
-    socket: {
-      connectTimeout: 2000,
-      reconnectStrategy: false,
+  Redis = require('ioredis');
+  
+  // ioredis automatically connects and manages connection pooling
+  client = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+    maxRetriesPerRequest: 1,
+    retryStrategy(times) {
+      if (times >= 3) return null; // Don't crash the server, bypass cache instead
+      return Math.min(times * 50, 2000);
     }
   });
 
   client.on('error', (err) => {
-    // console.warn('Redis connection failed or lost. Caching bypassed.');
+    // Silently handle if Redis goes away to preserve e-commerce functionality
     isConnected = false;
   });
 
   client.on('connect', () => {
-    console.log('✅ Redis Cache connected');
+    console.log('✅ Heavy-Traffic Cache (ioredis) connected');
     isConnected = true;
-  });
-
-  // Try to connect, catch error silently if Redis is not installed
-  client.connect().catch(() => {
-    isConnected = false;
   });
 } catch (e) {
   isConnected = false;
@@ -45,7 +42,7 @@ const getCache = async (key) => {
 };
 
 /**
- * Set data in cache
+ * Set data in cache safely
  * @param {string} key 
  * @param {any} data 
  * @param {number} expiration in seconds (default 3600)
@@ -53,12 +50,12 @@ const getCache = async (key) => {
 const setCache = async (key, data, expiration = 3600) => {
   if (!isConnected) return;
   try {
-    await client.setEx(key, expiration, JSON.stringify(data));
+    await client.set(key, JSON.stringify(data), 'EX', expiration);
   } catch (err) { }
 };
 
 /**
- * Invalidate cache by key or pattern
+ * Invalidate cache by exact key
  * @param {string} key 
  */
 const invalidateCache = async (key) => {
