@@ -194,26 +194,39 @@ router.post('/verify-email', async (req, res, next) => {
 // @POST /api/auth/send-otp (User Magic Login/Signup)
 router.post('/send-otp', async (req, res, next) => {
   try {
-    const { email } = req.body;
+    const { email, name, action } = req.body;
     if (!email) return res.status(400).json({ message: 'Email required' });
 
     const user = await User.findOne({ email });
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+    // Enforce strict intent actions if provided
+    if (action === 'register' && user) {
+      return res.status(400).json({ message: 'Email already registered. Please login instead.' });
+    }
+    if (action === 'login' && !user) {
+      return res.status(404).json({ message: 'Account not found. Please register first.' });
+    }
 
     if (user && user.isBlocked) return res.status(403).json({ message: 'Account blocked' });
 
-    // Store OTP in Verification model (for both existing and new users)
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+    const updateData = { otp, otpExpires, type: user ? 'login' : 'signup' };
+    if (action === 'register' && name) updateData.name = name;
+
     await Verification.findOneAndUpdate(
       { email },
-      { otp, otpExpires, type: user ? 'login' : 'signup' },
+      updateData,
       { upsert: true }
     );
 
+    const isLogin = user ? true : false;
+
     await sendEmail({
       email,
-      subject: 'Your Kora Apparel Login Code',
-      message: `Your login code is: ${otp}`,
+      subject: isLogin ? 'Your Kora Apparel Login Code' : 'Verify Your Kora Registration',
+      message: `Your authentication code is: ${otp}`,
       html: `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 550px; margin: 0 auto; border: 1px solid #f3f3f3; padding: 60px 40px; border-radius: 24px; color: #1a1a1a; line-height: 1.6; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.02);">
           <div style="margin-bottom: 50px;">
@@ -223,9 +236,9 @@ router.post('/send-otp', async (req, res, next) => {
           <div style="background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%); border: 1px solid #eeeeee; padding: 30px 20px; border-radius: 16px; margin: 0 0 40px 0;">
             <div style="font-size: 36px; font-weight: 800; letter-spacing: 14px; color: #000; font-family: 'Courier New', monospace; margin-left: 14px;">${otp}</div>
           </div>
-          <p style="font-size: 14px; color: #888; margin-bottom: 0;">Use this code to complete your sign-in.</p>
+          <p style="font-size: 14px; color: #888; margin-bottom: 0;">${isLogin ? 'Use this code to complete your sign-in.' : 'Use this code to verify your registration.'}</p>
           <div style="margin-top: 60px; border-top: 1px solid #f0f0f0; padding-top: 30px;">
-            <p style="font-size: 10px; color: #ccc; text-transform: uppercase; letter-spacing: 2px;">© 2024 Kora Apparel. All Rights Reserved.</p>
+            <p style="font-size: 10px; color: #ccc; text-transform: uppercase; letter-spacing: 2px;">© ${new Date().getFullYear()} Kora Apparel. All Rights Reserved.</p>
           </div>
         </div>
       `

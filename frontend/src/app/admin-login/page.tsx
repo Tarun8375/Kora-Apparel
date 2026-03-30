@@ -12,7 +12,7 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const { setAuth, user } = useAuthStore();
   const [view, setView] = useState<'login' | 'forgot'>('login');
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-background flex flex-col justify-center items-center p-6 pb-32">
       <div className="w-full max-w-md bg-card border border-border/50 rounded-2xl p-10 shadow-2xl relative overflow-hidden group">
         <div className="absolute top-0 left-0 w-full h-1 bg-primary/20 transition-all group-hover:bg-primary/50" />
-        
+
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
             <h1 className="text-3xl font-serif font-bold tracking-[0.1em] uppercase text-primary">KORA</h1>
@@ -74,33 +74,33 @@ export default function AdminLoginPage() {
           <form onSubmit={handleLogin} className="flex flex-col gap-6">
             <div className="space-y-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Admin Email</label>
-              <Input 
-                type="email" 
-                placeholder="admin@kora.com" 
-                value={email} 
-                onChange={e => setEmail(e.target.value)} 
-                className="h-12 bg-background border-border/60 focus:border-primary rounded-xl" 
+              <Input
+                type="email"
+                placeholder="admin@kora.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="h-12 bg-background border-border/60 focus:border-primary rounded-xl"
                 required
               />
             </div>
             <div className="space-y-2">
-               <div className="flex justify-between items-center ml-1">
-                 <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Master Password</label>
-                 <button type="button" onClick={() => setView('forgot')} className="text-[10px] font-bold uppercase tracking-widest text-primary hover:underline">Lost access?</button>
-               </div>
-              <Input 
-                type="password" 
-                placeholder="••••••••" 
-                value={password} 
-                onChange={e => setPassword(e.target.value)} 
-                className="h-12 bg-background border-border/60 focus:border-primary rounded-xl" 
+              <div className="flex justify-between items-center ml-1">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Master Password</label>
+                <button type="button" onClick={() => setView('forgot')} className="text-[10px] font-bold uppercase tracking-widest text-primary hover:underline">Lost access?</button>
+              </div>
+              <Input
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="h-12 bg-background border-border/60 focus:border-primary rounded-xl"
                 required
               />
             </div>
-            <Button 
-              type="submit" 
-              size="lg" 
-              className="w-full h-12 uppercase tracking-[0.2em] text-[10px] font-bold mt-4 bg-foreground text-background hover:bg-primary transition-all rounded-xl" 
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full h-12 uppercase tracking-[0.2em] text-[10px] font-bold mt-4 bg-foreground text-background hover:bg-primary transition-all rounded-xl"
               disabled={loading}
             >
               {loading ? 'Validating...' : 'Authenticate'}
@@ -110,26 +110,26 @@ export default function AdminLoginPage() {
           <form onSubmit={handleForgot} className="flex flex-col gap-6">
             <div className="space-y-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Security Email</label>
-              <Input 
-                type="email" 
-                placeholder="admin@kora.com" 
-                value={email} 
-                onChange={e => setEmail(e.target.value)} 
-                className="h-12 bg-background border-border/60 focus:border-primary rounded-xl" 
+              <Input
+                type="email"
+                placeholder="admin@kora.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="h-12 bg-background border-border/60 focus:border-primary rounded-xl"
                 required
               />
             </div>
-            <Button 
-              type="submit" 
-              size="lg" 
-              className="w-full h-12 uppercase tracking-[0.2em] text-[10px] font-bold mt-4 bg-foreground text-background hover:bg-primary transition-all rounded-xl" 
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full h-12 uppercase tracking-[0.2em] text-[10px] font-bold mt-4 bg-foreground text-background hover:bg-primary transition-all rounded-xl"
               disabled={loading}
             >
               {loading ? 'Processing...' : 'Secure Recovery'}
             </Button>
             <div className="text-center mt-6">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setView('login')}
                 className="text-[10px] text-muted-foreground hover:text-foreground transition-all uppercase tracking-[0.2em] font-bold"
               >

@@ -201,6 +201,8 @@ function AccountContent() {
 
   const [activeTab, setActiveTab] = useState(initTab);
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [authAction, setAuthAction] = useState<'login' | 'register'>('login');
 
   useEffect(() => {
     if (user && activeTab === 'login') {
@@ -278,13 +280,14 @@ function AccountContent() {
   const handleSendOtp = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!email) return toast.error('Enter your email');
+    if (authAction === 'register' && !name) return toast.error('Enter your full name');
     setLoading(true);
     try {
-      await api.post('/auth/send-otp', { email });
+      await api.post('/auth/send-otp', { email, name: authAction === 'register' ? name : undefined, action: authAction });
       setShowOtpInput(true);
       toast.success('Verification code transmitted');
     } catch (err: any) {
-      toast.error('Transmission failed');
+      toast.error(err.response?.data?.message || 'Transmission failed');
     } finally {
       setLoading(false);
     }
@@ -350,7 +353,49 @@ function AccountContent() {
           <div className="bg-card border border-border p-8 rounded-2xl shadow-xl space-y-6">
             {!showOtpInput ? (
               <form onSubmit={handleSendOtp} className="space-y-4">
-                <div className="space-y-1">
+                <div className="flex gap-2 mb-6 p-1 bg-muted/10 rounded-full border border-border/50">
+                  <button
+                    type="button"
+                    onClick={() => setAuthAction('login')}
+                    className={cn(
+                      "flex-1 h-10 rounded-full text-xs font-bold uppercase tracking-widest transition-all",
+                      authAction === 'login' ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    Log In
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAuthAction('register')}
+                    className={cn(
+                      "flex-1 h-10 rounded-full text-xs font-bold uppercase tracking-widest transition-all",
+                      authAction === 'register' ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    Register
+                  </button>
+                </div>
+
+                <AnimatePresence mode="popLayout">
+                  {authAction === 'register' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-1 overflow-hidden"
+                    >
+                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Full Name</label>
+                      <Input
+                        placeholder="John Doe"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        className="h-12 rounded-xl bg-muted/20"
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <div className="space-y-1 mt-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Email Address</label>
                   <Input
                     placeholder="your@email.com"
@@ -359,14 +404,14 @@ function AccountContent() {
                     className="h-12 rounded-xl bg-muted/20"
                   />
                 </div>
-                <Button disabled={loading} className="w-full h-12 rounded-xl font-bold uppercase tracking-widest text-xs">
-                  {loading ? 'Initializing...' : 'Get Verification Code'}
+                <Button disabled={loading} className="w-full h-12 rounded-xl font-bold uppercase tracking-widest text-xs mt-4">
+                  {loading ? 'Processing...' : authAction === 'login' ? 'Continue with Email' : 'Create Account'}
                 </Button>
               </form>
             ) : (
               <form onSubmit={handleVerifyOtp} className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Terminal Code</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Secure Code</label>
                   <Input
                     placeholder="000000"
                     value={otp}
@@ -377,7 +422,7 @@ function AccountContent() {
                 <Button disabled={loading} className="w-full h-12 rounded-xl font-bold uppercase tracking-widest text-xs">
                   {loading ? 'Verifying...' : 'Establish Session'}
                 </Button>
-                <button onClick={() => setShowOtpInput(false)} className="w-full text-xs font-medium text-muted-foreground hover:text-foreground">
+                <button type="button" onClick={() => setShowOtpInput(false)} className="w-full text-xs font-medium text-muted-foreground hover:text-foreground">
                   Wrong path? Click to change email
                 </button>
               </form>
