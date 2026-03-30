@@ -24,7 +24,10 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: REDIS_URL
-        sync: false
+        fromService:
+          type: redis
+          name: kora-apparel-redis
+          property: connectionString
       - key: IMAGEKIT_PUBLIC_KEY
         sync: false
       - key: IMAGEKIT_PRIVATE_KEY
