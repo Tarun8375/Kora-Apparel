@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 const mongoose = require('mongoose');
 const User = require('./models/User');
 const connectDB = require('./config/db');
@@ -6,16 +7,20 @@ const connectDB = require('./config/db');
 const seed = async () => {
   await connectDB();
   try {
-    const email = 'admin@kora.com';
-    const password = 'admin123';
+    const email = process.env.ADMIN_EMAIL || 'admin@kora.com';
+    const password = process.env.ADMIN_PASSWORD || 'admin123';
 
     let admin = await User.findOne({ email });
 
     if (admin) {
-      admin.password = password;
-      admin.isVerified = true;
-      await admin.save();
-      console.log(`✅ Admin password RESET to: ${password}`);
+      if (process.env.RESET_ADMIN === 'true') {
+        admin.password = password;
+        admin.isVerified = true;
+        await admin.save();
+        console.log(`✅ Admin account (${email}) password has been RESET.`);
+      } else {
+        console.log(`✅ Admin account (${email}) already exists. Use RESET_ADMIN=true to reset it.`);
+      }
     } else {
       await User.create({
         name: 'Kora Admin',
@@ -24,11 +29,8 @@ const seed = async () => {
         role: 'admin',
         isVerified: true,
       });
-      console.log('✅ Admin created successfully!');
+      console.log(`✅ Admin account (${email}) created successfully!`);
     }
-    console.log(`   Email: ${email}`);
-    console.log(`   Password: ${password}`);
-    console.log('   ⚠️  Change password after first login!');
   } catch (err) {
     console.error('❌ Seed failed:', err.message);
   }
