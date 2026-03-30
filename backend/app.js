@@ -36,6 +36,9 @@ const Notification = require('./models/Notification');
 
 const app = express();
 
+// Trust Proxy for accurate IP retrieval behind Render's load balancers
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 if (process.env.NODE_ENV !== 'test') {
@@ -50,19 +53,30 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: 'Too many login attempts, please try again in 15 minutes.'
-});
-app.use('/api/auth/login', loginLimiter);
-app.use('/api/auth/admin/login', loginLimiter);
+// CORS & CSRF Origin Protection
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'https://kora-apparel-frontend.onrender.com'
+].filter(Boolean);
 
-// CORS
 app.use(cors({
-  origin: [process.env.FRONTEND_URL, 'http://localhost:3000', 'http://localhost:3001', 'https://kora-apparel-frontend.onrender.com'],
+  origin: allowedOrigins,
   credentials: true,
 }));
+
+// Strict CSRF Mitigator: Native browsers will always send Origin for cross-origin POSTs.
+app.use((req, res, next) => {
+  if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
+    const origin = req.headers.origin;
+    // We allow same-origin requests (no origin header in some scenarios) or matched origin
+    if (origin && !allowedOrigins.includes(origin)) {
+      return res.status(403).json({ message: 'CSRF Forbidden: Origin mismatch' });
+    }
+  }
+  next();
+});
 
 // Body & Cookie parsing
 app.use(express.json({ limit: '10mb' }));

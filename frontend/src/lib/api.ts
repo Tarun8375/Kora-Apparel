@@ -22,7 +22,10 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      useAuthStore.getState().logout();
+      // Fire-and-forget backend logout to definitively crush the HttpOnly cookie, then local wipe
+      api.post('/auth/logout').catch(() => {}).finally(() => {
+        useAuthStore.getState().logout();
+      });
     }
     return Promise.reject(error);
   }

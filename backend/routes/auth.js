@@ -6,8 +6,15 @@ const User = require('../models/User');
 const Verification = require('../models/Verification');
 const Notification = require('../models/Notification');
 const bcrypt = require('bcryptjs');
+const rateLimit = require('express-rate-limit');
 const { protect } = require('../middleware/auth');
 const sendEmail = require('../utils/sendEmail');
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: 'Too many login attempts, please try again in 15 minutes.'
+});
 
 const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
@@ -26,14 +33,15 @@ const sendTokenResponse = (user, res) => {
     name: user.name,
     email: user.email,
     role: user.role,
-    cart: user.cart || []
+    cart: user.cart || [],
+    token // Backwards compatibility for older API consumers/tests
   });
 };
 
 // ================= ADMIN FLOWS =================
 
 // @POST /api/auth/admin/login
-router.post('/admin/login', async (req, res, next) => {
+router.post('/admin/login', loginLimiter, async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: 'Email and password required' });
@@ -299,7 +307,7 @@ router.post('/verify-otp', async (req, res, next) => {
 });
 
 // @POST /api/auth/login (Existing Password Login)
-router.post('/login', async (req, res, next) => {
+router.post('/login', loginLimiter, async (req, res, next) => {
   try {
     const { email, password, localCart } = req.body;
     if (!email || !password) return res.status(400).json({ message: 'Email and password required' });
@@ -513,11 +521,12 @@ router.post('/reset-password', async (req, res, next) => {
 
 // @POST /api/auth/logout
 router.post('/logout', (req, res) => {
-  res.cookie('jwt', 'none', {
-    expires: new Date(Date.now() + 10 * 1000),
+  res.cookie('jwt', '', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    maxAge: 0,
+    path: '/'
   });
   res.status(200).json({ message: 'Logged out successfully' });
 });

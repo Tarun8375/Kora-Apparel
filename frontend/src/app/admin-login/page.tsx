@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
     setLoading(true);
     try {
       const { data } = await api.post('/auth/admin/login', { email, password });
-      setAuth({ _id: data._id, name: data.name, email: data.email, role: data.role }, data.token);
+      setAuth({ _id: data._id, name: data.name, email: data.email, role: data.role });
       toast.success('Welcome back, Admin!');
       router.push('/admin');
     } catch (err: any) {

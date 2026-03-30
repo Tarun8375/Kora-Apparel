@@ -244,7 +244,7 @@ function AccountContent() {
   const updateProfileOp = useMutation({
     mutationFn: async (data: any) => await api.put('/auth/me', data),
     onSuccess: (res) => {
-      setAuth({ ...user, ...res.data }, useAuthStore.getState().token);
+      setAuth({ ...user, ...res.data });
       toast.success('Profile synced successfully');
     },
     onError: (err: any) => toast.error(err.response?.data?.message || 'Update failed')
@@ -295,7 +295,7 @@ function AccountContent() {
     setLoading(true);
     try {
       const { data } = await api.post('/auth/verify-otp', { email, otp, localCart });
-      setAuth({ _id: data._id, name: data.name, email: data.email, role: data.role }, data.token);
+      setAuth({ _id: data._id, name: data.name, email: data.email, role: data.role });
       if (data.cart) setCart(data.cart);
       toast.success('Access Granted');
       if (redirect) router.push(`/${redirect}`);

@@ -95,7 +95,7 @@ export default function CheckoutPage() {
   const updateProfileOp = useMutation({
     mutationFn: async (data: any) => await api.put('/auth/me', data),
     onSuccess: (res) => {
-      setAuth({ ...user, ...res.data }, useAuthStore.getState().token);
+      setAuth({ ...user, ...res.data });
       setSelectedAddressIdx((res.data.addresses?.length || 1) - 1);
       setShowNewAddressForm(false);
       toast.success('Address Synchronized');
