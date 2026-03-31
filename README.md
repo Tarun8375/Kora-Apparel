@@ -1,6 +1,11 @@
-# 🏛️ THE HOUSE OF KORA
+<div align="center">
+  <img src="C:\Users\shaurya\.gemini\antigravity\brain\0940d160-803e-4cf2-bf13-5b2663a8c025\kora_logo_premium_1774980986378.png" width="800" alt="K O R A" />
+  <p>REDEFINING THE MINIMAL SILHOUETTE</p>
+</div>
 
-> **“Redefining the modern silhouette through intentionality and grace.”**
+<br />
+
+> **“Elevating everyday wear through intentional design.”**
 
 Kora Apparel is a premium minimal fashion house dedicated to the bold and the meticulous. We believe in elevating everyday wear through architectural design, superior craftsmanship, and a commitment to timeless, monochromatic aesthetics.
 
