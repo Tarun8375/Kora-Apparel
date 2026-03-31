@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="C:\Users\shaurya\.gemini\antigravity\brain\0940d160-803e-4cf2-bf13-5b2663a8c025\kora_logo_premium_1774980986378.png" width="800" alt="K O R A" />
+  <img src="Full white Transparent@4x.png" width="800" alt="K O R A" />
   <p>REDEFINING THE MINIMAL SILHOUETTE</p>
 </div>
 
@@ -36,7 +36,7 @@ At Kora, we focus on **Refining Minimalism**. Our process is a study in silence�
 ## 📜 LEGAL & PROPRIETARY NOTICE
 Copyright © 2026 Kora Apparel. **All Rights Reserved.**
 
-This repository and all associated assets—including source code, architectural designs, visual identities, and editorial content—are the exclusive intellectual property of Kora Apparel. 
+This repository and all associated assets—including source code, architectural designs, visual identities, and editorial content—are the exclusive intellectual property of Kora Apparel.
 
 **Unauthorized reproduction, modification, distribution, or commercial use is strictly prohibited without explicit written consent from the House.**
 
