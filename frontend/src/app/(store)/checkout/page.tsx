@@ -200,22 +200,17 @@ export default function CheckoutPage() {
       <div className="container mx-auto px-6 max-w-7xl pt-40 pb-40">
 
         {/* Progress Stepper */}
-        <div className="flex items-center justify-center mb-16 gap-4 md:gap-12">
+        <div className="flex items-center justify-between mb-20 gap-4 border-b border-border pb-4">
           {[
             { id: 'address', label: 'ADDRESS' },
             { id: 'summary', label: 'SUMMARY' },
             { id: 'payment', label: 'PAYMENT' }
           ].map((s, i) => (
-            <div key={s.id} className="flex items-center gap-4">
-              <div className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
-                step === s.id ? "bg-primary text-white scale-110 shadow-lg" : "bg-muted text-muted-foreground"
-              )}>{i + 1}</div>
+            <div key={s.id} className="flex flex-col md:flex-row md:items-center gap-2">
               <span className={cn(
-                "text-[10px] font-bold tracking-[0.2em] hidden md:block",
-                step === s.id ? "text-foreground" : "text-muted-foreground opacity-50"
-              )}>{s.label}</span>
-              {i < 2 && <div className="w-8 h-px bg-border hidden lg:block"></div>}
+                "text-[10px] font-black tracking-[0.3em] uppercase transition-colors",
+                step === s.id ? "text-primary" : "text-muted-foreground opacity-50"
+              )}>0{i + 1} // {s.label}</span>
             </div>
           ))}
         </div>
@@ -244,22 +239,24 @@ export default function CheckoutPage() {
                           key={i}
                           onClick={() => setSelectedAddressIdx(i)}
                           className={cn(
-                            "p-6 border-2 rounded-2xl cursor-pointer transition-all relative group",
-                            selectedAddressIdx === i ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
+                            "p-6 border cursor-pointer transition-all relative group",
+                            selectedAddressIdx === i ? "border-primary bg-primary/5" : "border-border hover:border-foreground/50"
                           )}
                         >
                           <div className="flex justify-between items-start mb-4">
                             <span className={cn(
-                              "text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded bg-muted border",
+                              "text-[9px] font-black uppercase tracking-[0.2em] px-2 py-1 bg-muted/50 border",
                               selectedAddressIdx === i && "border-primary/20"
-                            )}>{addr.label}</span>
-                            {selectedAddressIdx === i && <CheckCircle2 className="w-5 h-5 text-primary" />}
+                            )}>
+                              {addr.label}
+                            </span>
+                            {selectedAddressIdx === i && <CheckCircle2 className="w-4 h-4 text-primary" />}
                           </div>
-                          <p className="text-sm font-bold truncate">{addr.line1}</p>
-                          <div className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                          <p className="text-sm font-bold uppercase truncate tracking-widest">{addr.line1}</p>
+                          <div className="text-[11px] text-muted-foreground mt-2 leading-relaxed uppercase tracking-wider">
                             {addr.city}, {addr.state} - {addr.pincode}
                           </div>
-                          <div className="mt-4 pt-4 border-t border-border/50 flex items-center justify-between text-[11px] font-bold text-muted-foreground">
+                          <div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-[10px] font-black uppercase text-muted-foreground tracking-widest">
                             <Phone className="w-3 h-3 opacity-50" />
                             <span>{addr.phone}</span>
                           </div>
@@ -267,49 +264,49 @@ export default function CheckoutPage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="bg-card border border-border p-8 rounded-2xl shadow-xl space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="md:col-span-2 flex gap-3">
+                    <div className="border border-border p-8 space-y-8 bg-background">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="md:col-span-2 flex gap-4 border-b border-border pb-4">
                           {['Home', 'Work', 'Other'].map(l => (
                             <button
                               key={l}
                               onClick={() => setNewAddress({ ...newAddress, label: l })}
                               className={cn(
-                                "px-5 h-9 rounded-full text-[10px] font-bold uppercase border transition-all",
-                                newAddress.label === l ? "bg-foreground text-background" : "border-border text-muted-foreground"
+                                "text-[10px] font-black uppercase tracking-[0.2em] transition-all",
+                                newAddress.label === l ? "text-primary" : "text-muted-foreground hover:text-foreground"
                               )}
                             >
                               {l}
                             </button>
                           ))}
                         </div>
-                        <Input placeholder="Full Name *" value={newAddress.line1} onChange={e => setNewAddress({ ...newAddress, line1: e.target.value })} className="h-12 rounded-xl" />
-                        <Input placeholder="Street/Area *" value={newAddress.line2} onChange={e => setNewAddress({ ...newAddress, line2: e.target.value })} className="h-12 rounded-xl" />
-                        <Input placeholder="City *" value={newAddress.city} onChange={e => setNewAddress({ ...newAddress, city: e.target.value })} className="h-12 rounded-xl" />
-                        <Input placeholder="State *" value={newAddress.state} onChange={e => setNewAddress({ ...newAddress, state: e.target.value })} className="h-12 rounded-xl" />
-                        <Input placeholder="Pincode *" value={newAddress.pincode} onChange={e => setNewAddress({ ...newAddress, pincode: e.target.value })} className="h-12 rounded-xl" />
-                        <Input placeholder="Phone *" value={newAddress.phone} onChange={e => setNewAddress({ ...newAddress, phone: e.target.value })} className="h-12 rounded-xl" />
+                        <input placeholder="OPERATIVE DESIGNATION (FULL NAME) *" value={newAddress.line1} onChange={e => setNewAddress({ ...newAddress, line1: e.target.value })} className="w-full h-12 bg-transparent border-b border-border text-xs uppercase font-black tracking-widest text-foreground focus:outline-none focus:border-primary placeholder:text-muted-foreground/50 transition-colors rounded-none" />
+                        <input placeholder="STREET / AREA *" value={newAddress.line2} onChange={e => setNewAddress({ ...newAddress, line2: e.target.value })} className="w-full h-12 bg-transparent border-b border-border text-xs uppercase font-black tracking-widest text-foreground focus:outline-none focus:border-primary placeholder:text-muted-foreground/50 transition-colors rounded-none" />
+                        <input placeholder="CITY *" value={newAddress.city} onChange={e => setNewAddress({ ...newAddress, city: e.target.value })} className="w-full h-12 bg-transparent border-b border-border text-xs uppercase font-black tracking-widest text-foreground focus:outline-none focus:border-primary placeholder:text-muted-foreground/50 transition-colors rounded-none" />
+                        <input placeholder="STATE *" value={newAddress.state} onChange={e => setNewAddress({ ...newAddress, state: e.target.value })} className="w-full h-12 bg-transparent border-b border-border text-xs uppercase font-black tracking-widest text-foreground focus:outline-none focus:border-primary placeholder:text-muted-foreground/50 transition-colors rounded-none" />
+                        <input placeholder="PINCODE *" value={newAddress.pincode} onChange={e => setNewAddress({ ...newAddress, pincode: e.target.value })} className="w-full h-12 bg-transparent border-b border-border text-xs uppercase font-black tracking-widest text-foreground focus:outline-none focus:border-primary placeholder:text-muted-foreground/50 transition-colors rounded-none" />
+                        <input placeholder="SECURE COMM LOOP (PHONE) *" value={newAddress.phone} onChange={e => setNewAddress({ ...newAddress, phone: e.target.value })} className="w-full h-12 bg-transparent border-b border-border text-xs uppercase font-black tracking-widest text-foreground focus:outline-none focus:border-primary placeholder:text-muted-foreground/50 transition-colors rounded-none" />
                       </div>
                       <Button
                         onClick={() => {
                           if (!newAddress.line1 || !newAddress.city || !newAddress.pincode) return toast.error('Required fields missing');
                           updateProfileOp.mutate({ addresses: [...(user.addresses || []), newAddress] });
                         }}
-                        className="w-full h-12 rounded-xl font-bold uppercase text-xs"
+                        className="w-full h-14 rounded-none font-black uppercase tracking-[0.2em] text-[10px] bg-foreground text-background hover:bg-primary transition-colors mt-8"
                       >
-                        Save and Continue
+                        Commit Address Record
                       </Button>
                     </div>
                   )}
 
                   {!showNewAddressForm && (
-                    <div className="pt-8 flex justify-end">
+                    <div className="pt-8 flex justify-end gap-2">
                       <Button
                         disabled={selectedAddressIdx === null}
                         onClick={() => setStep('summary')}
-                        className="h-12 px-10 rounded-full font-bold uppercase tracking-widest text-xs group"
+                        className="w-full lg:w-auto h-12 px-8 rounded-none font-black uppercase tracking-[0.2em] text-[10px] bg-foreground text-background hover:bg-primary transition-colors group"
                       >
-                        Continue to Summary <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                        Proceed <ChevronRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </div>
                   )}
@@ -342,12 +339,12 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  <div className="pt-8 flex justify-end">
+                  <div className="pt-8 flex justify-end gap-2">
                     <Button
                       onClick={() => setStep('payment')}
-                      className="h-12 px-10 rounded-full font-bold uppercase tracking-widest text-xs group"
+                      className="w-full lg:w-auto h-12 px-8 rounded-none font-black uppercase tracking-[0.2em] text-[10px] bg-foreground text-background hover:bg-primary transition-colors group"
                     >
-                      Continue to Payment <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      Authenticate Settlement <ChevronRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
                 </motion.div>
@@ -366,32 +363,30 @@ export default function CheckoutPage() {
                       <button
                         onClick={() => setPaymentMethod('razorpay')}
                         className={cn(
-                          "flex flex-col p-8 border-2 text-left transition-all rounded-3xl relative",
-                          paymentMethod === 'razorpay' ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
+                          "flex flex-col p-6 border text-left transition-all relative group",
+                          paymentMethod === 'razorpay' ? "border-primary bg-primary/5" : "border-border hover:border-foreground/50"
                         )}
                       >
-                        <div className="flex justify-between items-start mb-6">
-                          <CreditCard className={cn("w-6 h-6", paymentMethod === 'razorpay' ? "text-primary" : "text-muted-foreground/50")} />
-                          {paymentMethod === 'razorpay' && <CheckCircle2 className="w-5 h-5 text-primary" />}
+                        <div className="flex justify-between items-start mb-6 w-full">
+                          <CreditCard className={cn("w-5 h-5", paymentMethod === 'razorpay' ? "text-primary" : "text-muted-foreground")} />
+                          {paymentMethod === 'razorpay' && <CheckCircle2 className="w-4 h-4 text-primary" />}
                         </div>
-                        <span className="text-sm font-bold uppercase">Online Payment</span>
-                        <span className="text-[10px] text-muted-foreground font-medium mt-1">UPI, Cards, Wallets, NetBanking</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">UPI / Card Route</span>
                       </button>
 
                       {settings?.isCodEnabled && (
                         <button
                           onClick={() => setPaymentMethod('cod')}
                           className={cn(
-                            "flex flex-col p-8 border-2 text-left transition-all rounded-3xl relative",
-                            paymentMethod === 'cod' ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
+                            "flex flex-col p-6 border text-left transition-all relative group",
+                            paymentMethod === 'cod' ? "border-primary bg-primary/5" : "border-border hover:border-foreground/50"
                           )}
                         >
-                          <div className="flex justify-between items-start mb-6">
-                            <Wallet className={cn("w-6 h-6", paymentMethod === 'cod' ? "text-primary" : "text-muted-foreground/50")} />
-                            {paymentMethod === 'cod' && <CheckCircle2 className="w-5 h-5 text-primary" />}
+                          <div className="flex justify-between items-start mb-6 w-full">
+                            <Wallet className={cn("w-5 h-5", paymentMethod === 'cod' ? "text-primary" : "text-muted-foreground")} />
+                            {paymentMethod === 'cod' && <CheckCircle2 className="w-4 h-4 text-primary" />}
                           </div>
-                          <span className="text-sm font-bold uppercase">Cash on Delivery</span>
-                          <span className="text-[10px] text-muted-foreground font-medium mt-1">Pay at your doorstep</span>
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Physical Exchange</span>
                         </button>
                       )}
                     </div>
@@ -402,13 +397,13 @@ export default function CheckoutPage() {
                     <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Global standard encryption secured. PCI-DSS compliant infrastructure.</p>
                   </div>
 
-                  <div className="pt-8 flex justify-center">
+                  <div className="pt-8 flex justify-end">
                     <Button
                       disabled={loading}
                       onClick={handleFinalPurchase}
-                      className="h-16 px-16 rounded-full font-bold uppercase tracking-widest text-sm shadow-xl hover:scale-105 transition-all"
+                      className="w-full lg:w-auto h-14 px-12 rounded-none font-black uppercase tracking-[0.2em] text-[10px] bg-foreground text-background hover:bg-primary transition-colors hover:scale-105"
                     >
-                      {loading ? 'Processing...' : 'Place Order Now'}
+                      {loading ? 'Processing...' : 'Authorize Transaction'}
                     </Button>
                   </div>
                 </motion.div>
@@ -420,19 +415,19 @@ export default function CheckoutPage() {
           <div className="lg:w-96">
             <div className="sticky top-28 space-y-6">
 
-              <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
+              <div className="border border-border bg-background">
                 <div className="p-8 space-y-8">
-                  <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                    <span>Cart Totals</span>
-                    <ShoppingBag className="w-4 h-4 opacity-30" />
+                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                    <span>Transmission Summary</span>
+                    <ShoppingBag className="w-4 h-4 opacity-50 text-primary" />
                   </div>
 
                   {/* Coupon UI */}
                   {!appliedCoupon ? (
                     <div className="flex gap-2">
-                      <Input
-                        placeholder="Coupon Code"
-                        className="h-12 bg-muted/20 border-border text-xs font-bold uppercase tracking-widest"
+                      <input
+                        placeholder="OVERRIDE CYPHER"
+                        className="w-full h-12 bg-transparent border-b border-border text-[10px] uppercase font-black tracking-[0.2em] text-foreground focus:outline-none focus:border-primary placeholder:text-muted-foreground/50 transition-colors"
                         value={couponCode}
                         onChange={e => setCouponCode(e.target.value.toUpperCase())}
                       />
@@ -440,7 +435,7 @@ export default function CheckoutPage() {
                         variant="outline"
                         onClick={validateCoupon}
                         disabled={couponLoading || !couponCode}
-                        className="h-12 border-border text-xs font-bold uppercase cursor-pointer"
+                        className="h-12 border-border text-[10px] font-black tracking-[0.2em] uppercase cursor-pointer rounded-none hover:bg-primary hover:text-white transition-colors"
                       >
                         Apply
                       </Button>
@@ -455,34 +450,36 @@ export default function CheckoutPage() {
                     </div>
                   )}
 
-                  <div className="space-y-4 text-xs font-medium text-muted-foreground">
-                    <div className="flex justify-between">
-                      <span>Order Total</span>
+                  <div className="space-y-4 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                    <div className="flex justify-between border-b border-border/50 pb-2">
+                      <span>Value Escrow</span>
                       <span className="text-foreground">₹{subtotal}</span>
                     </div>
                     {discountAmount > 0 && (
-                      <div className="flex justify-between text-green-600 font-bold">
-                        <span>Coupons Offer</span>
+                       <div className="flex justify-between text-primary border-b border-border/50 pb-2">
+                        <span>Cypher Bypass</span>
                         <span>- ₹{discountAmount}</span>
                       </div>
                     )}
-                    <div className="flex justify-between">
-                      <span>Tax (GST {taxRate}%)</span>
+                    <div className="flex justify-between border-b border-border/50 pb-2">
+                      <span>State Tribute (GST {taxRate}%)</span>
                       <span className="text-foreground">₹{taxAmount}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Logistics Fee</span>
-                      <span className={cn(shippingCost === 0 ? "text-green-600 font-bold" : "text-foreground")}>{shippingCost === 0 ? "FREE" : `₹${shippingCost}`}</span>
+                      <span className={cn(shippingCost === 0 ? "text-primary" : "text-foreground")}>{shippingCost === 0 ? "WAIVED" : `₹${shippingCost}`}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-8 bg-muted/5 border-t border-border flex justify-between items-center">
-                  <div>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Total Payee</p>
-                    <h4 className="text-3xl font-serif font-bold tracking-tight">₹{grandTotal}</h4>
+                <div className="p-8 bg-muted/5 flex flex-col items-start border-t border-border">
+                  <div className="w-full flex justify-between items-end">
+                     <div>
+                       <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-2">Net Settlement</p>
+                       <h4 className="text-4xl font-serif font-bold tracking-tight">₹{grandTotal}</h4>
+                     </div>
+                     <ShieldCheck className="w-6 h-6 text-foreground opacity-50 mb-2" />
                   </div>
-                  <ShieldCheck className="w-8 h-8 text-primary opacity-30" />
                 </div>
               </div>
 

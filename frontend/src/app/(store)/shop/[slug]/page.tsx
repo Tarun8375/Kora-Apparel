@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
+import Link from 'next/link';
 import { getImageUrl } from '@/lib/imageUrl';
 import { ImageMagnifier } from '@/components/ui/ImageMagnifier';
 import { useParams } from 'next/navigation';
@@ -73,13 +74,14 @@ export default function ProductPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-6 max-w-7xl pt-32 pb-24 grid grid-cols-1 md:grid-cols-2 gap-12">
-        <Skeleton className="w-full aspect-[3/4] rounded-2xl bg-card" />
-        <div className="flex flex-col gap-6 pt-10">
-          <Skeleton className="w-1/4 h-6 bg-card" />
-          <Skeleton className="w-3/4 h-12 bg-card" />
-          <Skeleton className="w-1/3 h-8 bg-card" />
-          <Skeleton className="w-full h-32 bg-card mt-8" />
+      <div className="w-full min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-background">
+        <Skeleton className="w-full h-[50vh] lg:h-screen rounded-none bg-card" />
+        <div className="flex flex-col justify-center px-8 lg:px-24 py-20 gap-8">
+          <Skeleton className="w-1/4 h-4 bg-card rounded-none" />
+          <Skeleton className="w-3/4 h-16 bg-card rounded-none" />
+          <Skeleton className="w-1/3 h-8 bg-card rounded-none" />
+          <div className="h-[1px] w-full bg-border my-8" />
+          <Skeleton className="w-full h-32 bg-card rounded-none" />
         </div>
       </div>
     );
@@ -87,9 +89,12 @@ export default function ProductPage() {
 
   if (error || !product) {
     return (
-      <div className="container mx-auto px-6 py-40 text-center">
-        <h1 className="text-3xl font-serif mb-4">Product Not Found</h1>
-        <p className="text-muted-foreground">The product you are looking for does not exist or has been removed.</p>
+      <div className="w-full min-h-screen flex items-center justify-center bg-background text-center px-6">
+        <div className="flex flex-col gap-6 max-w-md">
+          <h1 className="text-4xl font-serif uppercase tracking-tight">Signal Lost</h1>
+          <p className="text-xs uppercase font-black tracking-[0.2em] text-muted-foreground leading-relaxed">The requested unit could not be located in the current archive. Return to the index.</p>
+          <Link href="/shop" className="text-xs font-black uppercase tracking-[0.2em] text-foreground border-b border-foreground pb-2 hover:border-primary transition-colors w-fit mx-auto mt-4">Browse Index</Link>
+        </div>
       </div>
     );
   }
@@ -125,87 +130,89 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="container mx-auto px-6 max-w-7xl pt-40 pb-32">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
+    <div className="w-full min-h-screen bg-background">
+      <div className="grid grid-cols-1 lg:grid-cols-2">
 
-        {/* IMAGE GALLERY */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          className="flex flex-col-reverse md:flex-row gap-4 h-fit sticky top-24"
-        >
-          <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-y-auto no-scrollbar md:h-[80vh]">
+        {/* IMAGE GALLERY - LEFT SPLIT */}
+        <div className="lg:sticky lg:top-0 w-full h-[60vh] lg:h-screen flex items-center justify-center bg-card relative overflow-hidden group">
+          <div className="absolute top-6 left-6 z-20 flex flex-col gap-4">
             {product.images?.map((img: string, idx: number) => (
               <button
                 key={idx}
                 onClick={() => setActiveImage(idx)}
-                className={`flex-shrink-0 relative w-20 md:w-24 aspect-[3/4] overflow-hidden transition-all duration-500 rounded-none ${activeImage === idx ? 'opacity-100 scale-100' : 'opacity-40 hover:opacity-100 scale-95'
+                className={`relative w-12 aspect-[3/4] overflow-hidden transition-all duration-500 rounded-none border border-border/50 ${activeImage === idx ? 'opacity-100 scale-100 border-primary' : 'opacity-40 hover:opacity-100'
                   }`}
               >
-                <img src={getImageUrl(img)} alt={`${product.name} ${idx}`} className="w-full h-full object-cover" />
+                <img src={getImageUrl(img)} alt={`${product.name} ${idx}`} className="w-full h-full object-cover grayscale-[0.2]" />
               </button>
             ))}
           </div>
-          <div className="relative w-full aspect-[3/4] md:h-[80vh] md:w-auto md:flex-1 overflow-hidden bg-transparent rounded-none">
+
+          <div className="absolute top-6 right-6 z-20">
             <WishlistButton product={product} />
+          </div>
+
+          <div className="w-full h-full">
             {product.images?.[activeImage] ? (
               <ImageMagnifier
                 src={getImageUrl(product.images[activeImage])}
                 alt={product.name}
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground uppercase tracking-luxury text-xs">No Image</div>
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground font-black text-xs uppercase tracking-[0.3em]">No Image Logged</div>
             )}
           </div>
-        </motion.div>
+        </div>
 
-        {/* DETAILS */}
+        {/* DETAILS - RIGHT SPLIT */}
         <motion.div
           initial="hidden"
           animate="visible"
           variants={{
             hidden: { opacity: 0 },
-            visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.2 } }
+            visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.2 } }
           }}
-          className="flex flex-col py-6 md:py-10"
+          className="flex flex-col justify-center px-8 py-20 lg:px-24 min-h-screen border-l border-border"
         >
-          <motion.p variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="uppercase tracking-[0.2em] font-medium text-xs text-primary mb-4">{product.category}</motion.p>
-          <motion.h1 variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="text-4xl lg:text-5xl font-serif tracking-[0.05em] uppercase mb-6 text-foreground leading-[1.1]">
+          <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex justify-between items-start mb-6">
+            <p className="uppercase tracking-[0.3em] font-black text-[10px] text-muted-foreground">Class: {product.category}</p>
+            {product.stock <= 0 && (
+              <span className="text-[10px] uppercase font-black tracking-[0.3em] text-destructive bg-destructive/10 px-3 py-1">Depleted</span>
+            )}
+          </motion.div>
+          
+          <motion.h1 variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="text-5xl lg:text-7xl font-serif tracking-tight uppercase mb-8 text-foreground leading-[0.9]">
             {product.name}
           </motion.h1>
 
-          <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex items-center gap-4 mb-8">
-            <span className="text-xl font-medium tracking-luxury">₹{product.price}</span>
+          <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex items-center gap-6 mb-12">
+            <span className="text-xl font-light tracking-widest uppercase">USD {product.price}</span>
             {product.comparePrice && (
-              <span className="text-sm text-muted-foreground/50 line-through tracking-luxury">₹{product.comparePrice}</span>
-            )}
-            {product.stock <= 0 && (
-              <span className="ml-auto bg-transparent border border-destructive/20 text-destructive text-[10px] uppercase tracking-luxury font-bold px-3 py-1">Sold Out</span>
+              <span className="text-sm text-muted-foreground/40 line-through tracking-widest uppercase">USD {product.comparePrice}</span>
             )}
           </motion.div>
 
-          <motion.p variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="text-muted-foreground font-light leading-relaxed mb-10 text-sm">
+          <motion.p variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="text-muted-foreground font-light leading-loose text-sm uppercase tracking-widest mb-12 max-w-xl">
             {product.description}
           </motion.p>
 
-          <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }} className="h-px w-full bg-border/50 mb-8"></motion.div>
+          <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }} className="h-[1px] w-full bg-border mb-12"></motion.div>
 
           {/* COLORS */}
           {product.colors?.length > 0 && (
-            <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="mb-8">
-              <div className="flex justify-between items-center mb-4 text-[10px] uppercase tracking-luxury font-semibold">
-                <span>Color</span>
-                <span className="text-muted-foreground font-medium">{selectedColor || 'Select'}</span>
+            <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="mb-12">
+              <div className="flex justify-between items-center mb-6 text-[10px] uppercase tracking-[0.3em] font-black">
+                <span className="text-muted-foreground">Spectrum</span>
+                <span className="text-foreground">{selectedColor || 'Pending'}</span>
               </div>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-4">
                 {product.colors.map((color: string) => (
                   <button
                     key={color}
                     onClick={() => setSelectedColor(color)}
-                    className={`px-5 py-2.5 text-xs uppercase tracking-widest border transition-all duration-500 rounded-none ${selectedColor === color
-                        ? 'border-foreground text-background bg-foreground'
-                        : 'border-border text-foreground hover:border-muted-foreground bg-transparent'
+                    className={`px-6 py-3 text-[10px] uppercase font-black tracking-[0.2em] transition-all duration-300 rounded-none border-b-2 ${selectedColor === color
+                        ? 'border-primary text-primary bg-primary/5'
+                        : 'border-border text-foreground hover:border-foreground bg-transparent'
                       }`}
                   >
                     {color}
@@ -217,19 +224,19 @@ export default function ProductPage() {
 
           {/* SIZES */}
           {product.sizes?.length > 0 && (
-            <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="mb-10">
-              <div className="flex justify-between items-center mb-4 text-[10px] uppercase tracking-luxury font-semibold">
-                <span>Size</span>
-                <button className="text-muted-foreground font-medium hover:text-foreground transition-colors text-[10px]">Size Guide</button>
+            <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="mb-16">
+              <div className="flex justify-between items-center mb-6 text-[10px] uppercase tracking-[0.3em] font-black">
+                <span className="text-muted-foreground">Dimensions</span>
+                <button className="text-foreground hover:text-primary transition-colors border-b border-foreground pb-0.5">Parameters</button>
               </div>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-4">
                 {product.sizes.map((size: string) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`w-12 h-12 flex items-center justify-center text-xs uppercase font-medium border transition-all duration-500 rounded-none ${selectedSize === size
-                        ? 'border-foreground text-background bg-foreground'
-                        : 'border-border text-foreground hover:border-muted-foreground bg-transparent'
+                    className={`w-14 h-14 flex items-center justify-center text-xs uppercase font-black tracking-widest transition-all duration-300 rounded-none border ${selectedSize === size
+                        ? 'border-primary text-primary bg-primary/5'
+                        : 'border-border text-foreground hover:border-foreground bg-transparent'
                       }`}
                   >
                     {size}
@@ -240,18 +247,18 @@ export default function ProductPage() {
           )}
 
           {/* ACTIONS */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex gap-4 mb-12">
-            <div className="flex items-center border border-border px-2 h-14 bg-transparent rounded-none">
+          <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex gap-6 mb-16">
+            <div className="flex items-center border border-border bg-transparent rounded-none">
               <button
-                className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                className="w-12 h-14 flex items-center justify-center text-foreground hover:bg-muted transition-colors disabled:opacity-30"
                 onClick={() => setQty(Math.max(1, qty - 1))}
                 disabled={qty <= 1}
               >
                 <Minus className="w-4 h-4" />
               </button>
-              <span className="w-10 text-center text-sm font-medium">{qty}</span>
+              <span className="w-12 text-center text-xs font-black tracking-widest uppercase">{qty}</span>
               <button
-                className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                className="w-12 h-14 flex items-center justify-center text-foreground hover:bg-muted transition-colors disabled:opacity-30"
                 onClick={() => setQty(Math.min(product.stock, qty + 1))}
                 disabled={qty >= product.stock}
               >
@@ -261,31 +268,31 @@ export default function ProductPage() {
 
             <Button
               size="lg"
-              className="flex-1 h-14 rounded-none text-xs font-bold uppercase tracking-luxury disabled:opacity-50 bg-foreground text-background hover:bg-transparent hover:text-foreground hover:border-foreground border border-transparent transition-all duration-500"
+              className="flex-1 h-14 rounded-none text-[10px] font-black uppercase tracking-[0.2em] disabled:opacity-50 !liquid-neon-btn text-background border-none transition-all duration-500 shadow-xl"
               onClick={handleAddToCart}
               disabled={isOutOfStock && (!!selectedSize || !!selectedColor || !product.variants?.length)}
             >
               <ShoppingBag className="w-4 h-4 mr-3" />
-              {isOutOfStock && (!!selectedSize || !!selectedColor || !product.variants?.length) ? 'Out of Stock' : 'Add to Cart'}
+              {isOutOfStock && (!!selectedSize || !!selectedColor || !product.variants?.length) ? 'Stock Depleted' : 'Acquire Unit'}
             </Button>
           </motion.div>
 
           {/* PROMISES */}
-          <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }} className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-border/50 mt-auto">
-            <div className="flex flex-col gap-2">
-              <ShieldCheck className="w-5 h-5 text-foreground/70" />
-              <span className="text-[10px] uppercase font-bold tracking-luxury text-foreground">Premium Quality</span>
-              <span className="text-[10px] text-muted-foreground">Ethically sourced materials</span>
+          <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }} className="grid grid-cols-1 sm:grid-cols-3 gap-8 pt-10 border-t border-border mt-auto">
+            <div className="flex flex-col gap-3 group">
+              <ShieldCheck className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              <span className="text-[9px] uppercase font-black tracking-[0.2em] text-foreground">Aura Certified</span>
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Architectural Grade</span>
             </div>
-            <div className="flex flex-col gap-2">
-              <Truck className="w-5 h-5 text-foreground/70" />
-              <span className="text-[10px] uppercase font-bold tracking-luxury text-foreground">Free Shipping</span>
-              <span className="text-[10px] text-muted-foreground">{settings?.deliveryPolicy || 'On orders over ₹5000'}</span>
+            <div className="flex flex-col gap-3 group">
+              <Truck className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              <span className="text-[9px] uppercase font-black tracking-[0.2em] text-foreground">Global Freight</span>
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{settings?.deliveryPolicy || 'Complimentary'}</span>
             </div>
-            <div className="flex flex-col gap-2">
-              <RefreshCcw className="w-5 h-5 text-foreground/70" />
-              <span className="text-[10px] uppercase font-bold tracking-luxury text-foreground">Easy Returns</span>
-              <span className="text-[10px] text-muted-foreground">{settings?.returnPolicy || '14-day return policy'}</span>
+            <div className="flex flex-col gap-3 group">
+              <RefreshCcw className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              <span className="text-[9px] uppercase font-black tracking-[0.2em] text-foreground">Recall Protocol</span>
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{settings?.returnPolicy || '14 Day window'}</span>
             </div>
           </motion.div>
 
@@ -293,71 +300,81 @@ export default function ProductPage() {
       </div>
 
       {/* REVIEWS SECTION */}
-      <div className="mt-32 max-w-4xl border-t border-border pt-20">
-        <h2 className="text-2xl font-serif mb-12 flex items-center gap-3">
-          <MessageSquare className="w-6 h-6 text-muted-foreground" /> Customer Reviews
-        </h2>
+      <div className="w-full bg-card border-t border-border py-32 px-6 lg:px-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+          
+          <div className="lg:col-span-4">
+            <p className="text-[10px] uppercase font-black tracking-[0.3em] text-muted-foreground mb-4">Transmission Logs</p>
+            <h2 className="text-5xl font-serif tracking-tight uppercase leading-[0.9] mb-12">Field <br/> Reports</h2>
+            <div className="h-[1px] w-full bg-border mb-12" />
 
-        {/* Review Form */}
-        <div className="bg-card border border-border/50 p-8 rounded-2xl mb-16">
-          <h3 className="text-lg font-medium mb-6">Write a Review</h3>
-          {user ? (
-            <div className="flex flex-col gap-6">
-              <div>
-                <label className="text-xs uppercase tracking-widest text-muted-foreground mb-3 block">Rating</label>
-                <div className="flex gap-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button key={star} onClick={() => setRating(star)} className="focus:outline-none transition-transform hover:scale-110">
-                      <Star className={`w-8 h-8 ${rating >= star ? 'fill-primary text-primary' : 'text-muted-foreground/30'}`} />
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <label className="text-xs uppercase tracking-widest text-muted-foreground mb-3 block">Your Feedback</label>
-                <textarea
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  className="w-full bg-background border border-border p-4 min-h-[120px] rounded-xl focus:outline-none focus:border-primary transition-colors text-sm"
-                  placeholder="What did you love about this item?"
-                />
-              </div>
-              <Button
-                onClick={() => submitReview.mutate()}
-                disabled={!comment.trim() || submitReview.isPending}
-                className="w-full md:w-auto self-start px-8 rounded-full"
-              >
-                {submitReview.isPending ? 'Submitting...' : 'Submit Review'}
-              </Button>
-            </div>
-          ) : (
-            <div className="text-center py-8 px-4 bg-muted/30 rounded-xl border border-dashed border-border">
-              <p className="text-muted-foreground mb-4">You must be logged in to leave a review.</p>
-              <Button variant="outline" onClick={() => window.location.href = '/login'}>Sign In to Review</Button>
-            </div>
-          )}
-        </div>
-
-        {/* Reviews List */}
-        <div className="flex flex-col gap-8">
-          {reviews?.length > 0 ? (
-            reviews.map((review: any) => (
-              <div key={review._id} className="pb-8 border-b border-border/50 last:border-0">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className={`w-3 h-3 ${review.rating >= star ? 'fill-primary text-primary' : 'text-muted-foreground/30'}`} />
-                    ))}
+            {/* Review Form */}
+            <div className="flex flex-col gap-8">
+              <h3 className="text-xs uppercase font-black tracking-[0.2em] text-foreground">Log New Data</h3>
+              {user ? (
+                <div className="flex flex-col gap-8">
+                  <div>
+                    <label className="text-[10px] uppercase font-black tracking-[0.3em] text-muted-foreground mb-4 block">Satisfaction Level</label>
+                    <div className="flex gap-4">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button key={star} onClick={() => setRating(star)} className="focus:outline-none transition-transform hover:scale-110">
+                          <Star className={`w-6 h-6 ${rating >= star ? 'fill-primary text-primary' : 'text-border'}`} />
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-widest text-foreground/80">{review.user?.name || 'Verified Customer'}</span>
-                  <span className="text-[10px] text-muted-foreground ml-auto">{new Date(review.createdAt).toLocaleDateString()}</span>
+                  <div>
+                    <label className="text-[10px] uppercase font-black tracking-[0.3em] text-muted-foreground mb-4 block">Operation Notes</label>
+                    <textarea
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      className="w-full bg-background border border-border p-6 min-h-[160px] rounded-none focus:outline-none focus:border-primary transition-colors text-xs uppercase tracking-widest text-foreground outline-none resize-none"
+                      placeholder="ENTER DATA..."
+                    />
+                  </div>
+                  <Button
+                    onClick={() => submitReview.mutate()}
+                    disabled={!comment.trim() || submitReview.isPending}
+                    className="w-full h-14 rounded-none text-[10px] font-black uppercase tracking-[0.2em] bg-foreground text-background hover:bg-primary transition-colors"
+                  >
+                    {submitReview.isPending ? 'Syncing...' : 'Transmit Report'}
+                  </Button>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">{review.comment}</p>
+              ) : (
+                <div className="text-left py-12 px-8 bg-background border border-border">
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-8">Access Denied. Credentials Required.</p>
+                  <Link href="/account?tab=login" className="text-xs font-black uppercase tracking-[0.2em] text-foreground border-b border-foreground pb-2 hover:border-primary transition-colors">Authenticate</Link>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Reviews List */}
+          <div className="lg:col-span-8 flex flex-col gap-12 lg:pl-12">
+             <div className="h-[1px] w-full bg-border md:hidden mb-4" />
+            {reviews?.length > 0 ? (
+              reviews.map((review: any) => (
+                <div key={review._id} className="pb-12 border-b border-border last:border-0 flex flex-col gap-6 group">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/50 pb-4">
+                    <div className="flex items-center gap-6">
+                      <div className="flex gap-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star key={star} className={`w-3 h-3 ${review.rating >= star ? 'fill-primary text-primary' : 'text-border'}`} />
+                        ))}
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground group-hover:text-primary transition-colors">{review.user?.name || 'Operative'}</span>
+                    </div>
+                    <span className="text-[9px] uppercase tracking-[0.3em] font-black text-muted-foreground">T-{new Date(review.createdAt).getTime()}</span>
+                  </div>
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground leading-loose">{review.comment}</p>
+                </div>
+              ))
+            ) : (
+              <div className="w-full h-full flex items-center justify-center min-h-[40vh] border border-border">
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground text-center px-6">Zero transmission logs found in database.</p>
               </div>
-            ))
-          ) : (
-            <p className="text-muted-foreground text-sm italic">No reviews yet. Be the first to review this product!</p>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
