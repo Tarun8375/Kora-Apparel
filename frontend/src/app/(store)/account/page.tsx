@@ -343,36 +343,36 @@ function AccountContent() {
 
   if (!user) {
     return (
-      <div className="min-h-screen pt-40 pb-20 flex items-center justify-center px-6">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-md w-full">
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-serif font-bold tracking-tight mb-2">My Account</h1>
-            <p className="text-muted-foreground text-sm font-medium">Identify yourself to continue</p>
+      <div className="min-h-screen pt-40 pb-32 flex flex-col items-center justify-center px-6 bg-background">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm">
+          <div className="text-center mb-16">
+            <h1 className="text-5xl font-serif uppercase tracking-tight mb-4">Identity</h1>
+            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-muted-foreground">Access your restricted protocols</p>
           </div>
 
-          <div className="bg-card border border-border p-8 rounded-2xl shadow-xl space-y-6">
+          <div className="space-y-8">
             {!showOtpInput ? (
-              <form onSubmit={handleSendOtp} className="space-y-4">
-                <div className="flex gap-2 mb-6 p-1 bg-muted/10 rounded-full border border-border/50">
+              <form onSubmit={handleSendOtp} className="flex flex-col gap-8">
+                <div className="flex gap-4 mb-6 border-b border-border pb-4">
                   <button
                     type="button"
                     onClick={() => setAuthAction('login')}
                     className={cn(
-                      "flex-1 h-10 rounded-full text-xs font-bold uppercase tracking-widest transition-all",
-                      authAction === 'login' ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:text-foreground"
+                      "flex-1 text-[10px] uppercase tracking-[0.3em] font-black transition-all pb-2 text-left border-b",
+                      authAction === 'login' ? "text-foreground border-primary" : "text-muted-foreground/40 border-transparent hover:text-foreground"
                     )}
                   >
-                    Log In
+                    Authenticate
                   </button>
                   <button
                     type="button"
                     onClick={() => setAuthAction('register')}
                     className={cn(
-                      "flex-1 h-10 rounded-full text-xs font-bold uppercase tracking-widest transition-all",
-                      authAction === 'register' ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:text-foreground"
+                      "flex-1 text-[10px] uppercase tracking-[0.3em] font-black transition-all pb-2 text-right border-b",
+                      authAction === 'register' ? "text-foreground border-primary" : "text-muted-foreground/40 border-transparent hover:text-foreground"
                     )}
                   >
-                    Register
+                    Establish
                   </button>
                 </div>
 
@@ -382,48 +382,46 @@ function AccountContent() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="space-y-1 overflow-hidden"
+                      className="space-y-4 overflow-hidden"
                     >
-                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Full Name</label>
-                      <Input
-                        placeholder="John Doe"
+                      <input
+                        placeholder="OPERATIVE DESIGNATION (FULL NAME)"
                         value={name}
                         onChange={e => setName(e.target.value)}
-                        className="h-12 rounded-xl bg-muted/20"
+                        className="w-full h-12 bg-transparent border-b border-foreground/30 text-xs uppercase font-black tracking-widest text-foreground focus:outline-none focus:border-primary placeholder:text-muted-foreground/70 transition-colors"
                       />
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                <div className="space-y-1 mt-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Email Address</label>
-                  <Input
-                    placeholder="your@email.com"
+                <div className="space-y-4">
+                  <input
+                    placeholder="TRANSMISSION CABLE (EMAIL)"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className="h-12 rounded-xl bg-muted/20"
+                    className="w-full h-12 bg-transparent border-b border-foreground/30 text-xs uppercase font-black tracking-widest text-foreground focus:outline-none focus:border-primary placeholder:text-muted-foreground/70 transition-colors"
                   />
                 </div>
-                <Button type="submit" disabled={loading} className="w-full h-12 rounded-xl font-bold uppercase tracking-widest text-xs mt-4">
-                  {loading ? 'Processing...' : authAction === 'login' ? 'Continue with Email' : 'Create Account'}
+                
+                <Button type="submit" disabled={loading} className="w-full h-14 rounded-none font-black uppercase tracking-[0.2em] text-[10px] mt-8 bg-foreground text-background hover:bg-primary transition-colors">
+                  {loading ? 'Processing...' : authAction === 'login' ? 'Initiate Link' : 'Register Signature'}
                 </Button>
               </form>
             ) : (
-              <form onSubmit={handleVerifyOtp} className="space-y-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Secure Code</label>
-                  <Input
-                    placeholder="000000"
+              <form onSubmit={handleVerifyOtp} className="flex flex-col gap-8">
+                <div className="space-y-4">
+                  <input
+                    placeholder="ENTER 6-DIGIT CYPHER"
                     value={otp}
                     onChange={e => setOtp(e.target.value)}
-                    className="h-12 rounded-xl bg-muted/20 text-center text-xl font-bold tracking-widest"
+                    className="w-full h-16 bg-transparent border-b border-foreground/30 text-center text-xl uppercase font-black tracking-[0.5em] text-foreground focus:outline-none focus:border-primary placeholder:text-muted-foreground/50 transition-colors"
                   />
                 </div>
-                <Button type="submit" disabled={loading} className="w-full h-12 rounded-xl font-bold uppercase tracking-widest text-xs">
+                <Button type="submit" disabled={loading} className="w-full h-14 rounded-none font-black uppercase tracking-[0.2em] text-[10px] bg-foreground text-background hover:bg-primary transition-colors">
                   {loading ? 'Verifying...' : 'Establish Session'}
                 </Button>
-                <button type="button" onClick={() => setShowOtpInput(false)} className="w-full text-xs font-medium text-muted-foreground hover:text-foreground">
-                  Wrong path? Click to change email
+                <button type="button" onClick={() => setShowOtpInput(false)} className="w-full text-[10px] uppercase font-black tracking-widest text-muted-foreground hover:text-primary transition-colors mt-4">
+                  Abort / Resend Cypher
                 </button>
               </form>
             )}

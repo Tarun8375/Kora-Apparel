@@ -3,51 +3,43 @@
 
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui;
-  --font-serif: var(--font-playfair), ui-serif, Georgia;
+  --font-serif: var(--font-space), ui-serif, Georgia;
 
-  --color-background: #0E0E0E;
-  --color-foreground: #F5F3EF;
+  --color-background: #131313;
+  --color-foreground: #E5E2E1;
 
   /* Card and subtle backgrounds */
-  --color-card: #141414;
-  --color-card-foreground: #F5F3EF;
-  --color-popover: #141414;
-  --color-popover-foreground: #F5F3EF;
+  --color-card: #1C1B1B;
+  --color-card-foreground: #E5E2E1;
+  --color-popover: #1C1B1B;
+  --color-popover-foreground: #E5E2E1;
 
   /* BRAND COLORS */
-  --color-primary: #C46A3C;
-  /* Accent Orange/Rust */
-  --color-primary-foreground: #0E0E0E;
-  /* Dark text on accent */
+  --color-primary: #88CEFF;
+  --color-primary-foreground: #00344D;
 
-  --color-secondary: #D8D2C6;
-  /* Light Beige/Grey */
-  --color-secondary-foreground: #0E0E0E;
-  /* Dark text on light beige */
+  --color-secondary: #0E0E0E;
+  --color-secondary-foreground: #E5E2E1;
 
-  --color-muted: #262626;
-  --color-muted-foreground: #A1A1A1;
+  --color-muted: #201F1F;
+  --color-muted-foreground: #BFC7D0;
 
-  --color-accent: #C46A3C;
-  --color-accent-foreground: #0E0E0E;
+  --color-accent: #353534;
+  --color-accent-foreground: #E5E2E1;
 
-  --color-destructive: #ef4444;
-  --color-destructive-foreground: #ffffff;
+  --color-destructive: #FFB4AB;
+  --color-destructive-foreground: #690005;
 
-  --color-border: #262626;
-  --color-input: #262626;
-  --color-ring: #C46A3C;
+  --color-border: #40484F;
+  --color-input: #40484F;
+  --color-ring: #88CEFF;
 
-  --radius-xl: 1rem;
-  --radius-lg: 0.5rem;
-  --radius-md: calc(0.5rem - 2px);
-  --radius-sm: calc(0.5rem - 4px);
+  --radius-xl: 0px;
+  --radius-lg: 0px;
+  --radius-md: 0px;
+  --radius-sm: 0px;
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these base styles back for backward compatibility.
-*/
 @layer base {
 
   *,
@@ -73,6 +65,7 @@
   h6 {
     font-family: var(--font-serif);
     font-weight: 500;
+    letter-spacing: -0.02em;
   }
 }
 
@@ -95,18 +88,23 @@ html {
 
 @layer utilities {
   .glass {
-    @apply bg-background/30 backdrop-blur-lg border border-foreground/10;
+    @apply bg-background/70 backdrop-blur-[20px] border-b border-white/5;
   }
 
-  .glass-card {
-    @apply bg-card/40 backdrop-blur-2xl border border-foreground/5 shadow-2xl;
+  .liquid-neon-btn {
+    background: linear-gradient(135deg, #88CEFF 0%, #4B98C8 100%);
+    color: #00344D;
+  }
+  
+  .liquid-neon-btn:hover {
+    box-shadow: 0 4px 64px 0 rgba(136, 206, 255, 0.2);
   }
 
-  .text-glow {
-    text-shadow: 0 0 20px rgba(245, 243, 239, 0.3);
+  .ambient-shadow {
+    box-shadow: 0 4px 64px 0 rgba(136, 206, 255, 0.08);
   }
 
-  .tracking-luxury {
-    letter-spacing: 0.25em;
+  .ghost-border {
+    @apply border border-border/15;
   }
 }

@@ -65,76 +65,78 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#0A0A0A] border-t border-border pt-20 pb-10">
-      <div className="container mx-auto px-6 max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-20">
-
+    <footer className="bg-background border-t border-border pt-32 pb-12">
+      <div className="container mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-8 mb-32">
+          
           {/* Brand */}
-          <div className="md:col-span-1">
-            <Link href="/" className="inline-block transition-transform hover:scale-105 active:scale-95 duration-300">
+          <div className="md:col-span-5 flex flex-col gap-8">
+            <Link href="/" className="inline-block transition-opacity hover:opacity-70">
               {settings?.logo ? (
                 <img src={getImageUrl(settings.logo)} alt="Kora Apparel" className="h-8 md:h-10 w-auto object-contain" />
               ) : (
-                <h2 className="text-2xl font-serif font-bold tracking-luxury text-primary">KORA</h2>
+                <h2 className="text-4xl font-serif tracking-tight uppercase">KORA</h2>
               )}
             </Link>
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mb-8">
-              {settings?.brandDescription || 'Premium, minimal fashion designed for the bold. Redefining modern apparel with timeless silhouettes.'}
+            <p className="text-sm uppercase tracking-widest text-muted-foreground leading-loose max-w-sm">
+              {settings?.brandDescription || 'ABSOLUTE FORM. ZERO NOISE. A UNIFORM FOR THE NEW ARCHITECTURE.'}
             </p>
 
             {/* Social Links */}
-            <div className="flex gap-5">
+            <div className="flex gap-6 mt-4">
               {settings?.socialLinks?.instagram && (
-                <a href={settings.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                  <Instagram className="w-5 h-5" />
+                <a href={settings.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+                  <Instagram className="w-4 h-4" />
                 </a>
               )}
               {settings?.socialLinks?.twitter && (
-                <a href={settings.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                  <Twitter className="w-5 h-5" />
+                <a href={settings.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+                  <Twitter className="w-4 h-4" />
                 </a>
               )}
               {settings?.socialLinks?.facebook && (
-                <a href={settings.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                  <Facebook className="w-5 h-5" />
+                <a href={settings.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+                  <Facebook className="w-4 h-4" />
                 </a>
               )}
             </div>
           </div>
 
+          <div className="md:col-span-1 hidden md:block"></div>
+
           {/* Dynamic Category Shop Links */}
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-widest mb-6 text-foreground">Shop</h4>
-            <ul className="space-y-4">
+          <div className="md:col-span-3">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] mb-8 text-foreground">Divisions</h4>
+            <ul className="flex flex-col gap-4">
               {shopCategories.length > 0 ? shopCategories.map((cat: any) => (
                 <li key={cat._id}>
                   <Link
                     href={`/shop?category=${encodeURIComponent(cat.slug)}`}
-                    className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                    className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {cat.name}
                   </Link>
                 </li>
               )) : (
                 <>
-                  <li><Link href="/shop" className="text-muted-foreground hover:text-primary transition-colors text-sm">All Products</Link></li>
-                  <li><Link href="/drops" className="text-muted-foreground hover:text-primary transition-colors text-sm">Latest Drops</Link></li>
+                  <li><Link href="/shop" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">All Units</Link></li>
+                  <li><Link href="/drops" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">New Transmissions</Link></li>
                 </>
               )}
             </ul>
           </div>
 
           {/* Dynamic Footer Links */}
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-widest mb-6 text-foreground">Links</h4>
-            <ul className="space-y-4">
+          <div className="md:col-span-3">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] mb-8 text-foreground">Index</h4>
+            <ul className="flex flex-col gap-4">
               {footerLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     target={link.openInNewTab ? '_blank' : undefined}
                     rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
-                    className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                    className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -142,31 +144,13 @@ export default function Footer() {
               ))}
             </ul>
           </div>
-
-          {/* Newsletter */}
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-widest mb-6 text-foreground">Newsletter</h4>
-            <p className="text-muted-foreground text-sm mb-4">Subscribe for exclusive drops and early access.</p>
-            <form onSubmit={handleSubscribe} className="flex relative">
-              <input
-                type="email"
-                placeholder="Email Address"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                className="w-full bg-transparent border-b border-muted-foreground/30 py-2 text-sm focus:outline-none focus:border-primary transition-colors pr-8"
-              />
-              <button disabled={loading} className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors disabled:opacity-50">
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
-              </button>
-            </form>
-          </div>
-
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-muted-foreground/10 text-xs text-muted-foreground">
-          <p suppressHydrationWarning={true}>© {new Date().getFullYear()} Kora Apparel. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
+        <div className="w-full h-[1px] bg-border mb-8" />
+        
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] uppercase font-black tracking-[0.2em] text-muted-foreground">
+          <p suppressHydrationWarning={true}>© {new Date().getFullYear()} KORA STUDIO. ALL RIGHTS RESERVED.</p>
+          <div className="flex space-x-8">
             <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
           </div>

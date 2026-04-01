@@ -243,13 +243,13 @@ export default function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="fixed top-0 w-full z-[999] bg-primary text-primary-foreground overflow-hidden"
+            className="fixed top-0 w-full z-[999] bg-foreground text-background overflow-hidden opacity-90"
           >
             <div className="flex items-center justify-center py-2 overflow-hidden">
               <motion.div
                 animate={{ x: [0, -400] }}
-                transition={{ repeat: Infinity, duration: 20, ease: 'linear' }}
-                className="flex gap-16 whitespace-nowrap text-[9px] font-black uppercase tracking-[0.3em]"
+                transition={{ repeat: Infinity, duration: 25, ease: 'linear' }}
+                className="flex gap-16 whitespace-nowrap text-[9px] font-black uppercase tracking-[0.4em]"
               >
                 {Array(8).fill(announcementText).map((t, i) => (
                   <span key={i}>{t}</span>
@@ -262,9 +262,9 @@ export default function Navbar() {
 
       {/* ── Header ────────────────────────────────────────────────────── */}
       <header
-        className={`fixed w-full z-[1000] transition-all duration-500 ${announcementText && !isScrolled && !mobileMenuOpen ? 'top-7' : 'top-0'
+        className={`fixed w-full z-[1000] transition-all duration-700 ${announcementText && !isScrolled && !mobileMenuOpen ? 'top-7' : 'top-0'
           } ${isScrolled
-            ? 'bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-sm'
+            ? 'bg-background/70 backdrop-blur-[20px] shadow-none'
             : 'bg-transparent'
           }`}
       >
@@ -419,11 +419,11 @@ export default function Navbar() {
             className="fixed inset-0 z-[2000] bg-background flex flex-col"
           >
             {/* Mobile header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border/30">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border/10">
               <Link
                 href="/"
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-xl font-serif font-black tracking-[0.2em] uppercase"
+                className="text-2xl font-serif tracking-tight uppercase"
               >
                 Kora
               </Link>
@@ -449,9 +449,9 @@ export default function Navbar() {
                 <Link
                   href="/account?tab=login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="mt-10 flex items-center justify-center gap-3 w-full py-4 bg-primary text-primary-foreground rounded-2xl font-black text-sm uppercase tracking-[0.2em] group hover:bg-primary/90 transition-colors"
+                  className="mt-10 flex items-center justify-center gap-3 w-full py-4 liquid-neon-btn text-xs font-black uppercase tracking-[0.2em] group transition-all"
                 >
-                  Sign In / Register
+                  Acquire Access
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               )}
